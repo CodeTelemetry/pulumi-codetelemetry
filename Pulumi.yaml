@@ -1,0 +1,12 @@
+name: codetelemetry
+runtime:
+  name: nodejs
+  options:
+    packagemanager: npm
+description: Code Telemetry workspace alarms and enrichment configuration
+packages:
+  codetelemetry:
+    source: terraform-provider
+    version: 1.5.0
+    parameters:
+      - ./bin/terraform-provider-codetelemetry

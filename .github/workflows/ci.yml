@@ -1,0 +1,60 @@
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  validate:
+    name: Go ${{ matrix.go }} / Node ${{ matrix.node }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - go: '1.26.10'
+            node: '22'
+          - go: '1.27.3'
+            node: '24'
+    env:
+      PULUMI_SKIP_UPDATE_CHECK: 'true'
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16 # v6
+        with:
+          go-version: ${{ matrix.go }}
+          cache: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+      - name: Install pinned Pulumi CLI
+        shell: bash
+        run: |
+          tool_dir="$RUNNER_TEMP/codetelemetry-pulumi"
+          mkdir -p "$tool_dir"
+          curl --fail --silent --show-error --location \
+            https://get.pulumi.com/releases/sdk/pulumi-v3.268.0-linux-x64.tar.gz \
+            --output "$tool_dir/pulumi.tar.gz"
+          echo '903cafeaa9f6327e4bf53a8b7b99ae660f26198acfa804a2f982bf5de3f1de0b  '"$tool_dir/pulumi.tar.gz" | sha256sum --check
+          tar -xzf "$tool_dir/pulumi.tar.gz" -C "$tool_dir"
+          echo "$tool_dir/pulumi" >> "$GITHUB_PATH"
+      - name: Build provider, generate SDK and install locked dependencies
+        run: npm run setup
+      - name: Setup leaves committed metadata unchanged
+        run: git diff --exit-code -- package.json package-lock.json Pulumi.yaml
+      - name: Typecheck and lifecycle tests (local HTTP fixtures only)
+        run: npm test
+      - name: Audit locked npm dependency graph
+        run: npm audit --audit-level=low

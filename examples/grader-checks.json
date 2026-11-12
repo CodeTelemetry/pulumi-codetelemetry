@@ -1,0 +1,19 @@
+[
+  {
+    "id": "project-unit-tests",
+    "name": "Project unit tests",
+    "description": "AGENTS.md requires the project's unit test script to succeed.",
+    "category": "unit_test",
+    "weight": 1,
+    "satisfactionMode": "successful",
+    "minimumOccurrences": 1,
+    "aggregationMode": "once",
+    "enabled": true,
+    "matcherRule": {
+      "include": { "all": [
+        { "field": "source", "operator": "equals", "value": "shell" },
+        { "field": "packageScript", "operator": "equals", "value": "test" }
+      ] }
+    }
+  }
+]

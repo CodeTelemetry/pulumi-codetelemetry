@@ -1,0 +1,21 @@
+[
+  {
+    "id": "daily-spend",
+    "name": "Daily spend over $100",
+    "enabled": true,
+    "type": "tql",
+    "params": { "windowHours": 24 },
+    "channels": [{ "type": "in_app" }],
+    "cooldownMinutes": 360,
+    "severity": "warning",
+    "evaluateEveryMinutes": 15,
+    "notifyOnRecovery": false,
+    "origin": { "kind": "custom" },
+    "tql": {
+      "query": "invocations | stats sum(cost_usd) as spend_usd",
+      "column": "spend_usd",
+      "comparator": ">=",
+      "threshold": 100
+    }
+  }
+]
