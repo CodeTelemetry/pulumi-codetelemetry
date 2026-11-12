@@ -166,7 +166,7 @@ its first refresh. Verify the original endpoint and workspace before upgrading
 old state. To manage a different workspace, use separate state/a stack or import
 it intentionally. Do not remove the binding to bypass a mismatch.
 
-Build with a patched Go toolchain (1.26.10 or 1.27.3 and later patch levels).
+Build with a patched Go toolchain (1.26.11 or 1.27.4 and later patch levels).
 Report vulnerabilities privately through the
 [provider repository's security advisories](https://github.com/CodeTelemetry/terraform-provider-codetelemetry/security/advisories/new).
 

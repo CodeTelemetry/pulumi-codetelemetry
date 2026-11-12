@@ -13,7 +13,7 @@ mkdirSync(new URL("../bin/", import.meta.url), { recursive: true });
 // the pinned public revision is fetched and built. Keep PROVIDER_REF in step
 // with the provider revision this integration is tested against.
 const PROVIDER_REPOSITORY = "https://github.com/CodeTelemetry/terraform-provider-codetelemetry.git";
-const PROVIDER_REF = process.env.CODETELEMETRY_PROVIDER_REF || "e269f006f971c4687f9b6aa1054524b760a9674f";
+const PROVIDER_REF = process.env.CODETELEMETRY_PROVIDER_REF || "2d1437dd743e05a3698158a4492191c4bf222285";
 if (!/^[a-f0-9]{40}$/.test(PROVIDER_REF)) throw Error("CODETELEMETRY_PROVIDER_REF must be a full commit SHA");
 function buildProvider(directory) {
   execFileSync(process.env.GO_BINARY || "go", [
